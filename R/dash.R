@@ -399,6 +399,80 @@ Dash <- R6::R6Class(
       self$server$host <- host
       self$server$port <- as.numeric(port)
       self$run_server(...)
+    },
+    run_onprem = function(
+      # Replace with the name of your dashR app
+      # This will end up being part of the URL of your deployed app,
+      # so it can't contain any spaces, capitalizations, or special characters
+      #
+      # This name MUST match the name that you specified in the
+      # DashR App Manager
+      name = NULL,
+
+      # Set to 'private' if you want to add a login screen to your app
+      # You can choose who can view the app in your list of files
+      # at <your-plotly-server>/organize.
+      # Set to 'public' if you want your app to be accessible to
+      # anyone who has access to your Plotly server on your network without
+      # a login screen.
+      # Set to 'secret' if you want to add a login screen, but allow it
+      # to be bypassed by using a secret "share_key" parameter.
+
+      privacy = "public",
+      # Dash On-Premise is configured with either "Path based routing"
+      # or "Domain based routing"
+      # Ask your server administrator which version was set up.
+      # If a separate subdomain was created,
+      # then set this to `False`. If it was not, set this to 'True'.
+      # Path based routing is the default option and most On-Premise
+      # users use this option.
+      path_based_routing = Sys.getenv("PATH_BASED_ROUTING", "TRUE"),
+
+      # Fill in with your Plotly On-Premise username
+      username = Sys.getenv("PLOTLY_USERNAME", NA),
+
+      # Fill in with your Plotly On-Premise API key
+      # See <your-plotly-server>/settings/api to generate a key
+      key = Sys.getenv("PLOTLY_API_KEY", NA),
+
+      # Fill in with your Plotly On-Premise domain
+      domain = Sys.getenv("PLOTLY_DOMAIN", NA),
+
+      # Fill in with the domain of your Dash subdomain.
+      # This matches the domain of the Dash App Manager
+      dash_domain = Sys.getenv("PLOTLY_DASH_DOMAIN", NA),
+
+      # Keep as True if your SSL certificates are valid.
+      # If you are just trialing Plotly On-Premise with self signed certificates,
+      # then you can set this to False. Note that self-signed certificates are not
+      # safe for production.
+      ssl = Sys.getenv("PLOTLY_DASH_DOMAIN", "True"),
+
+      # arguments passed along to run_heroku()
+      ...
+    ) {
+
+      if (system.file(package = "dashRauth") == "") {
+        stop(
+          "The `dashRauth` package is required for on-premise deployment. ",
+          "Please install and try again.",
+          call. = FALSE
+        )
+      }
+
+      name <- name %||% private$name
+      privacy <- match.arg(privacy, c("public", "private", "secret"))
+      path_based_routing <- as.logical(path_based_routing)
+      if (is.na(username)) stop("Need a plotly username to run on-premise.")
+      if (is.na(key)) stop("Need a plotly api key to run on-premise.")
+      if (is.na(domain)) stop("Need to specify your on-premise domain.")
+      if (is.na(dash_domain)) stop("Need to specify your on-premise dash domain.")
+      ssl <- as.logical(ssl)
+
+
+
+
+      self$run_heroku(...)
     }
   ),
 
