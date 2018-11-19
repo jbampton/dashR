@@ -502,16 +502,16 @@ Dash <- R6::R6Class(
         fn_name <- paste0(".", pkg, "_js_metadata")
         fn_summary <- getAnywhere(fn_name)
         
-        if (length(fn_summary$where) > 0 & mode(fn_summary$obj[[1]]) == "function") {
+        if (length(fn_summary$where) == 0) return(NULL)
+        
+        if (mode(fn_summary$obj[[1]]) == "function") {
           # function is available in a loaded package
           dep_list <- do.call(fn_summary$obj[[1]], list())
+          
+          return(dep_list)
         } else {
-          dep_list <- NULL
+          return(NULL)  
         }
-        # dep_list should be a list element; if dep_list
-        # is returned as empty string, then return NULL
-        if (is.atomic(dep_list)) return(NULL)
-        return(dep_list)
       })
 
       # if core components are used, but no coreGraph() exists,
