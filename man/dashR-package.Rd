@@ -19,4 +19,9 @@ Useful links:
 \author{
 \strong{Maintainer}: Carson Sievert \email{cpsievert1@gmail.com}
 
+Authors:
+\itemize{
+  \item Ryan Patrick Kyle \email{ryan@plot.ly}
+}
+
 }
