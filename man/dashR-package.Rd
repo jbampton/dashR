@@ -18,5 +18,5 @@ Useful links:
 }
 \author{
 \strong{Maintainer}: Ryan Kyle \email{ryan@plot.ly}
-
+\strong{Assistant Maintainer}: Nadia Tahiri \email{nadia@plot.ly}
 }
