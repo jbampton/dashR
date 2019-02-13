@@ -10,15 +10,14 @@ An interface to the [dash](https://github.com/plotly/dash-renderer) ecosystem fo
 
 First, install `dashR` dependencies from CRAN:
 ```r
-install.packages(c("fiery", "routr", "reqres", "htmltools", "base64enc"))
+dashR_packs <- c("devtools", "fiery", "routr", "reqres", "htmltools", "base64enc")
+invisible(lapply(dashR_packs, require, character.only = TRUE))
 ```
 
 Installing the package and component libraries directly from GitHub using the `devtools` package is easy:
 
 ```r
-install_github("plotly/dashR")
-install_github("plotly/dash-html-components")
-install_github("plotly/dash-core-components")
+install_github(c("plotly/dashR", "plotly/dash-html-components", "plotly/dash-core-components"), force = TRUE)
 ```
 
 Now, load the packages in R:
