@@ -10,7 +10,7 @@ An interface to the [dash](https://github.com/plotly/dash-renderer) ecosystem fo
 
 First, install `dashR` dependencies from CRAN:
 ```r
-install.packages(c("fiery", "routr", "reqres", "htmltools", "base64enc"))
+install.packages(c("fiery", "routr", "reqres", "plotly", "htmltools", "base64enc", "mime"))
 ```
 
 Installing the package and component libraries directly from GitHub using the `devtools` package is easy:
