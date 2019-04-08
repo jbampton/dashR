@@ -71,6 +71,14 @@
 #'     provide [input] (and/or [state]) object(s) (which should reference
 #'     layout components) as argument value(s) to `func`.
 #'   }
+#'   \item{`clientside_callback(client_function = NULL, output = NULL)`}{
+#'     A callback function defintion. The `client_function` argument accepts a call
+#'     to clientsideFunction(), which describes the locally served JavaScript
+#'     function to call, and `output` defines which layout component property 
+#'     should adopt the results (via an [output] object). To determine what 
+#'     events trigger this callback, provide [input] (and/or [state]) object(s) 
+#'     (which should reference layout components) as argument value(s) to `client_function`.
+#'   }
 #'   \item{`dependencies_set(dependencies = NULL, add = TRUE)`}{
 #'     Adds additional HTML dependencies to your dash application (beyond the 'internal' dependencies).
 #'     The `dependencies` argument accepts [htmltools::htmlDependency] or
@@ -233,6 +241,7 @@ Dash <- R6::R6Class(
 
         # get the callback associated with this particular output
         thisOutput <- with(request$body$output, paste(id, property, sep = "."))
+        
         callback <- private$callback_map[[thisOutput]][['func']]
         if (!length(callback)) stop_report("Couldn't find output component.")
         if (!is.function(callback)) {
@@ -486,6 +495,33 @@ Dash <- R6::R6Class(
           state=state,
           func=func
         )
+    },
+
+    # ------------------------------------------------------------------------
+    # clientside callback registration
+    # ------------------------------------------------------------------------
+        
+    clientside_callback = function(output, params, client_function) {
+      assert_valid_callbacks(output, params, client_function)
+      
+      inputs <- params[vapply(params, function(x) 'input' %in% attr(x, "class"), FUN.VALUE=logical(1))]
+      state <- params[vapply(params, function(x) 'state' %in% attr(x, "class"), FUN.VALUE=logical(1))]
+      
+      # if client_function is not None:
+      #   self.callback_map[callback_id]['client_function'] = {
+      #     'namespace': client_function.namespace,
+      #     'function_name': client_function.function_name
+      #   }
+      # else:
+      #   self.callback_map[callback_id]['client_function'] = {}
+      
+      # register the clientside callback_map
+      private$callback_map[[paste(output$id, output$property, sep='.')]] <- list(
+        output=output,
+        inputs=inputs,
+        state=state,
+        client_function=client_function
+      )
     },
 
     # ------------------------------------------------------------------------
@@ -902,4 +938,8 @@ assert_valid_wildcards <- function (...)
   } else {
     return(args)
   }
+}
+
+clientsideFunction <- function(namespace, function_name='updateFig') {
+  return(list(namespace=namespace, function_name=function_name))
 }
