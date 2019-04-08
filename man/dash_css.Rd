@@ -14,16 +14,3 @@ Use the 'official' Dash stylesheet in your dashR applications
 \url{https://github.com/plotly/dash-app-stylesheets}. To learn how
 to use the default style ("docs-base"), see \url{https://codepen.io/chriddyp/pen/bWLwgP}
 }
-\examples{
-library(dashR)
-
-app <- Dash$new()
-
-app$layout_set(
-  coreInput(id = 'inputID', value = 'initial value', type = "text"),
-  htmlDiv(id = 'outputID')
-)
-
-app$dependencies_set(dash_css())
-app
-}
