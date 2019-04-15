@@ -7,6 +7,7 @@ Depends:
   R (>= 3.0.2)
 Imports:
   R6,
+  httpuv (<= 1.4.5.1),
   fiery (> 1.0.0),
   routr (> 0.2.0),
   plotly,
