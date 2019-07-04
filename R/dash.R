@@ -247,6 +247,9 @@ Dash <- R6::R6Class(
           stop(sprintf("Couldn't find a callback function associated with '%s'", thisOutput))
         }
 
+        # get the environment associated with this particular output
+        callback_env <- private$callback_map[[request$body$output]][['env']]
+        
         # the following callback_args code handles inputs which may contain
         # NULL values; we wish to retain the NULL elements, since these can
         # be passed into the callback handler, rather than dropping the list
@@ -280,7 +283,9 @@ Dash <- R6::R6Class(
         # set the callback context associated with this invocation of the callback
         private$callback_context_ <- setCallbackContext(request$body)
 
-        output_value <- getStackTrace(do.call(callback, callback_args),
+        output_value <- getStackTrace(do.call(callback, 
+                                              callback_args,
+                                              callback_env),
                                       debug = private$debug,
                                       pruned_errors = private$pruned_errors)
   
@@ -489,7 +494,7 @@ Dash <- R6::R6Class(
     # ------------------------------------------------------------------------
     # callback registration
     # ------------------------------------------------------------------------
-    callback = function(output, params, func) {
+    callback = function(output, params, func, env=parent.frame()) {
       assert_valid_callbacks(output, params, func)
 
       inputs <- params[vapply(params, function(x) 'input' %in% attr(x, "class"), FUN.VALUE=logical(1))]
@@ -500,7 +505,8 @@ Dash <- R6::R6Class(
           inputs=inputs,
           output=output,
           state=state,
-          func=func
+          func=func,
+          env=env
         )
     },
 
