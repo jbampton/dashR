@@ -283,9 +283,9 @@ Dash <- R6::R6Class(
         # set the callback context associated with this invocation of the callback
         private$callback_context_ <- setCallbackContext(request$body)
 
-        output_value <- getStackTrace(do.call(callback, 
-                                              callback_args,
-                                              callback_env),
+        output_value <- getStackTrace(do.call(what = callback, 
+                                              args = callback_args,
+                                              envir = callback_env),
                                       debug = private$debug,
                                       pruned_errors = private$pruned_errors)
   
